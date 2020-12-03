@@ -38,9 +38,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 
-@TeleOp(name="Basic: Linear OpMode", group="Linear Opmode")
+@TeleOp(name="TomahawkTeleOp", group="Linear Opmode")
 
-public class AryanTeleOp extends OpMode
+public class TomahawkTeleOp extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -70,17 +70,19 @@ public class AryanTeleOp extends OpMode
         rightBackDrive= hardwareMap.get(DcMotor.class, "rightBack");
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
-        leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction. FORWARD);
         leftBackDrive.setDirection(DcMotor.Direction. FORWARD);
-        rightBackDrive.setDirection(DcMotor.Direction. FORWARD);
+        rightBackDrive.setDirection(DcMotor.Direction. REVERSE);
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
+        stop();
     }
 
 @Override
     public void start() {
         runtime.reset();
+        stop();
     }
 
     /*
@@ -109,6 +111,14 @@ public class AryanTeleOp extends OpMode
      * Code to run ONCE after the driver hits STOP
      */
     @Override
-    public void stop() {}
-
+    public void stop() {
+        leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftBackDrive.setPower(0);
+        leftFrontDrive.setPower(0);
+        rightBackDrive.setPower(0);
+        rightFrontDrive.setPower(0);
     }
+}
