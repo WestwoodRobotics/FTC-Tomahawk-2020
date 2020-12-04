@@ -90,10 +90,10 @@ public class TomahawkTeleOp extends OpMode
      */
     @Override
     public void loop() {
-        leftFrontPower = gamepad1.left_stick_x + gamepad1.left_stick_y - gamepad1.right_stick_x;
-        rightFrontPower = gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x;
-        leftBackPower = gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x;
-        rightBackPower = gamepad1.left_stick_x + gamepad1.left_stick_y + gamepad1.right_stick_x;
+        leftFrontPower = -gamepad1.left_stick_x + gamepad1.left_stick_y - gamepad1.right_stick_x;
+        rightFrontPower = gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x;
+        leftBackPower = gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x;
+        rightBackPower = -gamepad1.left_stick_x + gamepad1.left_stick_y + gamepad1.right_stick_x;
 
         leftFrontDrive.setPower(leftFrontPower);
         rightFrontDrive.setPower(rightFrontPower);
