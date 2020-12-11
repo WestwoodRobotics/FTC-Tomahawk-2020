@@ -9,11 +9,9 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.teamcode.TomahawkAutonRed;
-//Assumes Robot moves 4ft every 10 sec
 @Autonomous(name="Basic: Auton", group="Linear Auton")
 public class TomahawkAutonRed extends LinearOpMode {
 
-    // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftFrontDrive = null;
     private DcMotor rightFrontDrive = null;
@@ -21,7 +19,7 @@ public class TomahawkAutonRed extends LinearOpMode {
     private DcMotor rightBackDrive = null;
     private DcMotor intake = null;
     private DcMotor shooter = null;
-    private Servo conveyor = null;
+    private DcMotor conveyor = null;
 
     double leftFrontPower;
     double rightFrontPower;
@@ -35,7 +33,6 @@ public class TomahawkAutonRed extends LinearOpMode {
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
@@ -45,7 +42,7 @@ public class TomahawkAutonRed extends LinearOpMode {
         rightBackDrive= hardwareMap.get(DcMotor.class, "rightBack");
         intake = hardwareMap.get(DcMotor.class, "intake");
         shooter = hardwareMap.get(DcMotor.class, "shooter");
-        conveyor = hardwareMap.get(Servo.class, "conveyor");
+        conveyor = hardwareMap.get(DcMotor.class, "conveyor");
         leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -59,12 +56,27 @@ public class TomahawkAutonRed extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
-
-        double squareTime = 0;
-        AutonFunction functions = new AutonFunction(leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive, runtime);
+        AutonFunction functions = new AutonFunction(leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive, shooter, runtime, conveyor);
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            functions.goForward(5);
+
+            // edit shooter power later
+
+            //get to easy spot
+            functions.goForward(54);
+            //align with 1st power shot
+            functions.goLeft(20.25);
+            //power shot
+            functions.shoot(0);
+            //align with 2nd power shot
+            functions.goRight(7.5);
+            functions.shoot(0);
+            //align with 3rd power shot
+            functions.goRight(7.5);
+            functions.shoot(0);
+
+            //Park on white line
+            functions.goForward(21);
         }
     }
 }
