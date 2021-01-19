@@ -74,6 +74,8 @@ public class TomahawkTeleOp extends OpMode
         rightFrontDrive.setDirection(DcMotor.Direction. FORWARD);
         leftBackDrive.setDirection(DcMotor.Direction. FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction. REVERSE);
+
+
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
         stop();

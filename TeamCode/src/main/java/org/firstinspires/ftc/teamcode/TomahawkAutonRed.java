@@ -53,7 +53,17 @@ public class TomahawkAutonRed extends LinearOpMode {
         rightFrontDrive.setDirection(DcMotor.Direction. FORWARD);
         leftBackDrive.setDirection(DcMotor.Direction. FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction. REVERSE);
+
+        leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+
+
+
         // Wait for the game to start (driver presses PLAY)
+
         waitForStart();
         runtime.reset();
         AutonFunction functions = new AutonFunction(leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive, shooter, runtime, conveyor);
