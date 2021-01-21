@@ -29,12 +29,39 @@
 
 package org.firstinspires.ftc.robotcontroller.external.samples;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
+
+/**
+ * This file illustrates the concept of driving a path based on encoder counts.
+ * It uses the common Pushbot hardware class to define the drive on the robot.
+ * The code is structured as a LinearOpMode
+ *
+ * The code REQUIRES that you DO have encoders on the wheels,
+ *   otherwise you would use: PushbotAutoDriveByTime;
+ *
+ *  This code ALSO requires that the drive Motors have been configured such that a positive
+ *  power command moves them forwards, and causes the encoders to count UP.
+ *
+ *   The desired path in this example is:
+ *   - Drive forward for 48 inches
+ *   - Spin right for 12 Inches
+ *   - Drive Backwards for 24 inches
+ *   - Stop and close the claw.
+ *
+ *  The code is written using a method called: encoderDrive(speed, leftInches, rightInches, timeoutS)
+ *  that performs the actual movement.
+ *  This methods assumes that each movement is relative to the last stopping place.
+ *  There are other ways to perform encoder based moves, but this method is probably the simplest.
+ *  This code uses the RUN_TO_POSITION mode to enable the Motor controllers to generate the run profile
+ *
+ * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
+ * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
+ */
+
 
 
 /**
@@ -50,15 +77,18 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Basic: Linear OpMode", group="Linear Opmode")
+@autonomous(name="Basic: Linear OpMode", group="Linear Opmode")
 @Disabled
 public class BasicOpMode_Linear extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftDrive = null;
-    private DcMotor rightDrive = null;
-
+    private DcMotor leftFrontDrive = null;
+    private DcMotor rightFrontDrive = null;
+    private DcMotor leftBackDrive = null;
+    private DcMotor rightBackDrive = null;
+    private DcMotor shooter = null;
+    static final double MOTOR_TICK_COUNT= 1120;
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
@@ -67,8 +97,18 @@ public class BasicOpMode_Linear extends LinearOpMode {
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        leftDrive  = hardwareMap.get(DcMotor.class, "left_drive");
-        rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
+        leftFrontDrive  = hardwareMap.get(DcMotor.class, "left_Front_drive");
+        rightFrontDrive = hardwareMap.get(DcMotor.class, "right_Front_drive");
+        leftBackDrive = hardwareMap.get(DcMotor.class, "left_Back_Drive");
+        rightBackDrive = hardwareMap.get(DcMotor.class, "right_Back_Drive)";
+
+
+
+
+        leftFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODERS);
+        rightFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODERS);
+
+
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -93,8 +133,15 @@ public class BasicOpMode_Linear extends LinearOpMode {
             // - This uses basic math to combine motions and is easier to drive straight.
             double drive = -gamepad1.left_stick_y;
             double turn  =  gamepad1.right_stick_x;
-            leftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
-            rightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
+            leftFrontDrivePower = Range.clip(drive + turn, -1.0, 1.0) ;
+            rightBackDrivePower = Range.clip(drive - turn, -1.0, 1.0) ;
+            leftFrontDrive = Range.clip(drive + turn, -1.0, 1.0) ;
+            rightBackDrive = Range.clip(drive + turn, -1.0, 1.0) ;
+
+            telemetry.addData("Status","Resetting Encoders");
+            telemetry.update();
+
+
 
             // Tank Mode uses one stick to control each wheel.
             // - This requires no math, but it is hard to drive forward slowly and keep straight.
@@ -102,8 +149,51 @@ public class BasicOpMode_Linear extends LinearOpMode {
             // rightPower = -gamepad1.right_stick_y ;
 
             // Send calculated power to wheels
-            leftDrive.setPower(leftPower);
-            rightDrive.setPower(rightPower);
+            leftFrontDrive.setPower(leftFrontPower);
+            rightFrontDrive.setPower(rightFrontPower);
+            leftBackDrive.setpower(leftBackPower);
+            rightBackDrive.setpower(rightBackPower);
+
+            // Robot moves for power shot
+            leftFrontDrive.setPower(1);
+            rightFrontDrive.setPower(1);
+            leftBackDrive.setpower(1);
+            rightBackDrive.setpower(1);
+            // turn off motors
+            leftFrontDrive.setPower(0);
+            rightFrontDrive.setPower(0);
+            leftBackDrive.setpower(0);
+            rightBackDrive.setpower(0);
+            //move robot sideways
+            leftFrontDrive.setPower(-1);
+            leftBackDrive.setPower(1);
+            rightFrontDrive.setPower(1);
+            rightBackDrive.setPower(-1);
+            // shoot rings at power show
+            shooter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); // SETS TO 0
+            shooter.setTargetPosition(420); // number can change after testing)
+            shooter.setPower(1);
+            shooter.setMode(DcMotor.RunMode.RUN_TO_POSITION); // SETS TO 0
+           //moving robot for high goal
+            leftFrontDrive.setPower(1);
+            leftBackDrive.setPower(-1);
+            rightFrontDrive.setPower(-1);
+            rightBackDrive.setPower(1);
+            // stop robot
+            leftFrontDrive.setPower(0);
+            rightFrontDrive.setPower(0);
+            leftBackDrive.setpower(0);
+            rightBackDrive.setpower(0);
+            //shoot rings at high goal
+            shooter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); // SETS TO 0
+            shooter.setTargetPosition(420); // number can change after testing)
+            shooter.setPower(1);
+            shooter.setMode(DcMotor.RunMode.RUN_TO_POSITION); // SETS TO 0
+
+
+
+
+
 
 
             // Show the elapsed game time and wheel power.
