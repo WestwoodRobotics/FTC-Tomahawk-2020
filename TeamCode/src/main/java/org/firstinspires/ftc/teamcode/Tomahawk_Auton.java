@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.robotcontroller.external.samples;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -77,9 +77,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@autonomous(name="Basic: Linear OpMode", group="Linear Opmode")
+@Autonomous(name="Basic: Linear OpMode", group="Linear Opmode")
 @Disabled
-public class BasicOpMode_Linear extends LinearOpMode {
+public class Tomahawk_Auton extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -100,27 +100,32 @@ public class BasicOpMode_Linear extends LinearOpMode {
         leftFrontDrive  = hardwareMap.get(DcMotor.class, "left_Front_drive");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "right_Front_drive");
         leftBackDrive = hardwareMap.get(DcMotor.class, "left_Back_Drive");
-        rightBackDrive = hardwareMap.get(DcMotor.class, "right_Back_Drive)";
+        rightBackDrive = hardwareMap.get(DcMotor.class, "right_Back_Drive");
 
 
 
 
-        leftFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODERS);
-        rightFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODERS);
+        leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
-        leftDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightDrive.setDirection(DcMotor.Direction.REVERSE);
+        leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
+
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
-
+        /*
         // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
+         while (opModeIsActive()) {
 
             // Setup a variable for each drive wheel to save power level for telemetry
             double leftPower;
@@ -147,43 +152,23 @@ public class BasicOpMode_Linear extends LinearOpMode {
             // - This requires no math, but it is hard to drive forward slowly and keep straight.
             // leftPower  = -gamepad1.left_stick_y ;
             // rightPower = -gamepad1.right_stick_y ;
-
+            */
             // Send calculated power to wheels
-            leftFrontDrive.setPower(leftFrontPower);
-            rightFrontDrive.setPower(rightFrontPower);
-            leftBackDrive.setpower(leftBackPower);
-            rightBackDrive.setpower(rightBackPower);
-
             // Robot moves for power shot
-            leftFrontDrive.setPower(1);
-            rightFrontDrive.setPower(1);
-            leftBackDrive.setpower(1);
-            rightBackDrive.setpower(1);
-            // turn off motors
-            leftFrontDrive.setPower(0);
-            rightFrontDrive.setPower(0);
-            leftBackDrive.setpower(0);
-            rightBackDrive.setpower(0);
-            //move robot sideways
-            leftFrontDrive.setPower(-1);
-            leftBackDrive.setPower(1);
-            rightFrontDrive.setPower(1);
-            rightBackDrive.setPower(-1);
-            // shoot rings at power show
+
+
+
+
+            forward();
+            turnOffMotors();
+            moveToLeft();
+            // shoot rings at power shot
             shooter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); // SETS TO 0
             shooter.setTargetPosition(420); // number can change after testing)
             shooter.setPower(1);
             shooter.setMode(DcMotor.RunMode.RUN_TO_POSITION); // SETS TO 0
-           //moving robot for high goal
-            leftFrontDrive.setPower(1);
-            leftBackDrive.setPower(-1);
-            rightFrontDrive.setPower(-1);
-            rightBackDrive.setPower(1);
-            // stop robot
-            leftFrontDrive.setPower(0);
-            rightFrontDrive.setPower(0);
-            leftBackDrive.setpower(0);
-            rightBackDrive.setpower(0);
+            moveToRight();
+            turnOffMotors();
             //shoot rings at high goal
             shooter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); // SETS TO 0
             shooter.setTargetPosition(420); // number can change after testing)
@@ -194,12 +179,77 @@ public class BasicOpMode_Linear extends LinearOpMode {
 
 
 
-
-
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+            telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftFrontDrive, rightFrontDrive);
             telemetry.update();
         }
+
+    private void forward() {
+        runtime.reset();
+        while (runtime.seconds() < 5) {
+            leftFrontDrive.setPower(1);
+            rightFrontDrive.setPower(1);
+            leftBackDrive.setPower(1);
+            rightBackDrive.setPower(1);
+        }
+        stop();
     }
+
+    // turn off motors
+    private void turnOffMotors() {
+        leftFrontDrive.setPower(0);
+        rightFrontDrive.setPower(0);
+        leftBackDrive.setPower(0);
+        rightBackDrive.setPower(0);
+    }
+    //turn around counterclockwise
+    private void turnAroundClockwise() {
+        runtime.reset();
+        while (runtime.seconds() < 5) {
+            leftFrontDrive.setPower(-1);
+            leftBackDrive.setPower(1);
+            rightFrontDrive.setPower(1);
+            rightBackDrive.setPower(-1);
+        }
+        stop();
+    }
+
+
+
+
+    //moving robot for high goal
+    private void moveToRight() {
+
+        runtime.reset();
+        while (runtime.seconds() < 5) {
+            leftFrontDrive.setPower(1);
+            leftBackDrive.setPower(-1);
+            rightFrontDrive.setPower(-1);
+            rightBackDrive.setPower(1);
+        }
+        stop();
+    }
+
+    private void moveToLeft() {
+
+        runtime.reset();
+        while (runtime.seconds() < 5) {
+            leftFrontDrive.setPower(-1);
+            leftBackDrive.setPower(1);
+            rightFrontDrive.setPower(1);
+            rightBackDrive.setPower(-1);
+        }
+        stop();
+    }
+
+
+    // stop robot
+    private void stopRobot() {
+        leftFrontDrive.setPower(0);
+        rightFrontDrive.setPower(0);
+        leftBackDrive.setPower(0);
+        rightBackDrive.setPower(0);
+    }
+
 }
