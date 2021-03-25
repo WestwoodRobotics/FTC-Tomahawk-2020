@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.teamcode.TomahawkAutonRed;
 @Autonomous(name="Basic: Auton", group="Linear Auton")
-public class TomahawkAutonRed extends LinearOpMode {
+public class TestConveyor extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftFrontDrive = null;
@@ -69,24 +69,7 @@ public class TomahawkAutonRed extends LinearOpMode {
         AutonFunction functions = new AutonFunction(leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive, shooter, runtime, conveyor, intake);
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-
-            // edit shooter power later
-
-            //get to easy spot
-            functions.goForward(54);
-            //align with 1st power shot
-            functions.goLeft(20.25);
-            //power shot
-            functions.shoot(0);
-            //align with 2nd power shot
-            functions.goRight(7.5);
-            functions.shoot(0);
-            //align with 3rd power shot
-            functions.goRight(7.5);
-            functions.shoot(0);
-
-            //Park on white line
-            functions.goForward(21);
+            functions.belt(1);
         }
     }
 }

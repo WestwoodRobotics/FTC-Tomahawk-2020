@@ -13,11 +13,12 @@ public class AutonFunction {
     DcMotor rightBackDrive;
 
     DcMotor shooter;
+    DcMotor intake;
     DcMotor belt;
 
     public AutonFunction(DcMotor leftFrontDrive, DcMotor rightFrontDrive,
                          DcMotor leftBackDrive, DcMotor rightBackDrive, DcMotor shooter,
-                         ElapsedTime runtime, DcMotor belt){
+                         ElapsedTime runtime, DcMotor belt, DcMotor intake){
 
         this.leftFrontDrive = leftFrontDrive;
         this.rightFrontDrive = rightFrontDrive;
@@ -26,7 +27,7 @@ public class AutonFunction {
         this.shooter = shooter;
         this.runtime = runtime;
         this.belt = belt;
-
+        this.intake = intake;
     }
     public void goForward(double inches){
         runtime.reset();
@@ -110,7 +111,29 @@ public class AutonFunction {
         shooter.setPower(-1);
         //needs adjustment later
         double seconds = 5;
-        // add angling servo and conveyor
+        // add angling servo and belt
+        while(runtime.seconds()<seconds){
+
+        }
+        stop();
+    }
+    public void belt(double power){
+        runtime.reset();
+        belt.setPower(1);
+        //needs adjustment later
+        double seconds = 5;
+        // add angling servo and belt
+        while(runtime.seconds()<seconds){
+
+        }
+        stop();
+    }
+    public void intake(double power){
+        runtime.reset();
+        intake.setPower(1);
+        //needs adjustment later
+        double seconds = 5;
+        // add angling servo and belt
         while(runtime.seconds()<seconds){
 
         }
